@@ -1,0 +1,110 @@
+// Atributos privados (Encapsulamiento)
+    private String placa;
+    private String marca;
+    private double precioPorDia;
+    private int dias;
+    private String seguroCompleto; // "Sí" o "No"
+    private String gps;            // "Sí" o "No"
+    
+    // Constructor vacío
+    public Vehiculo() {
+    }
+
+    // Constructor con parámetros
+    public Vehiculo(String placa, String marca, double precioPorDia, int dias, String seguroCompleto, String gps) {
+        this.placa = placa;
+        this.marca = marca;
+        this.precioPorDia = precioPorDia;
+        this.dias = dias;
+        this.seguroCompleto = seguroCompleto;
+        this.gps = gps;
+    }
+
+    // Métodos Getters y Setters
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public double getPrecioPorDia() {
+        return precioPorDia;
+    }
+
+    public void setPrecioPorDia(double precioPorDia) {
+        this.precioPorDia = precioPorDia;
+    }
+
+    public int getDias() {
+        return dias;
+    }
+
+    public void setDias(int dias) {
+        this.dias = dias;
+    }
+
+    public String getSeguroCompleto() {
+        return seguroCompleto;
+    }
+
+    public void setSeguroCompleto(String seguroCompleto) {
+        this.seguroCompleto = seguroCompleto;
+    }
+
+    public String getGps() {
+        return gps;
+    }
+
+    public void setGps(String gps) {
+        this.gps = gps;
+    }
+
+    // Método para calcular el subtotal del vehículo
+    public double calcularSubtotal() {
+        double costoBase = this.precioPorDia * this.dias;
+        
+        // Si se alquila por más de 7 días, se aplica 15% de descuento sobre el costo base
+        if (this.dias > 7) {
+            costoBase = costoBase * 0.85;
+        }
+        
+        // Recargos diarios (no aplican para el descuento del 15%)
+        double recargoSeguro = 0;
+        if (this.seguroCompleto.equalsIgnoreCase("Sí") || this.seguroCompleto.equalsIgnoreCase("Si")) {
+            recargoSeguro = 5000 * this.dias;
+        }
+        
+        double recargoGps = 0;
+        if (this.gps.equalsIgnoreCase("Sí") || this.gps.equalsIgnoreCase("Si")) {
+            recargoGps = 2000 * this.dias;
+        }
+        
+        return costoBase + recargoSeguro + recargoGps;
+    }
+
+    // Método para calcular los puntos ganados por este vehículo
+    public int calcularPuntos() {
+        int puntos = 0;
+        
+        // Más de 7 días suma 5 puntos
+        if (this.dias > 7) {
+            puntos += 5;
+        }
+        
+        // Seguro completo suma 2 puntos
+        if (this.seguroCompleto.equalsIgnoreCase("Sí") || this.seguroCompleto.equalsIgnoreCase("Si")) {
+            puntos += 2;
+        }
+        
+        return puntos;
+    }
