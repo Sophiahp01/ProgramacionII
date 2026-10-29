@@ -1,0 +1,107 @@
+import javax.swing.JOptionPane;
+
+public class Main {
+    public static void main(String[] args) {
+        // Datos generales del cliente
+        String nombreCliente = JOptionPane.showInputDialog("Ingrese el nombre del cliente:");
+        String cedulaCliente = JOptionPane.showInputDialog("Ingrese el número de cédula del cliente:");
+        String categoria = JOptionPane.showInputDialog("Ingrese la categoría del cliente (VIP / Regular):");
+
+        // Validación del número de mes (1 al 12)
+        int mesNumero = 0;
+        do {
+            String mesStr = JOptionPane.showInputDialog("Ingrese el número del mes en que se realizaron los alquileres (1-12):");
+            mesNumero = Integer.parseInt(mesStr);
+            if (mesNumero < 1 || mesNumero > 12) {
+                JOptionPane.showMessageDialog(null, "Error: El número de mes debe estar entre 1 y 12.");
+            }
+        } while (mesNumero < 1 || mesNumero > 12);
+
+        // Transformación del número de mes a texto encapsulado
+        String nombreMes = obtenerNombreMes(mesNumero);
+
+        // Acumuladores
+        int cantidadVehiculos = 0;
+        double subtotalAcumulado = 0;
+        int puntosAcumulados = 0;
+
+        // Ciclo para registrar vehículos
+        int continuar = 0;
+        do {
+            String placa = JOptionPane.showInputDialog("Ingrese la placa del vehículo:");
+            String marca = JOptionPane.showInputDialog("Ingrese la marca del vehículo:");
+            double precioPorDia = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio base por día:"));
+            
+            // Validación de días mayores a 0
+            int dias = 0;
+            do {
+                dias = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de días de alquiler (mayor a 0):"));
+                if (dias <= 0) {
+                    JOptionPane.showMessageDialog(null, "Error: La cantidad de días debe ser mayor a 0.");
+                }
+            } while (dias <= 0);
+
+            String seguro = JOptionPane.showInputDialog("¿El alquiler incluye seguro completo? (Sí / No):");
+            String gps = JOptionPane.showInputDialog("¿El alquiler incluye dispositivo GPS? (Sí / No):");
+
+            // Instanciar el objeto Vehículo usando el constructor
+            Vehiculo miVehiculo = new Vehiculo(placa, marca, precioPorDia, dias, seguro, gps);
+
+            // Cálculos al vuelo por vehículo
+            double subtotalVehiculo = miVehiculo.calcularSubtotal();
+            int puntosVehiculo = miVehiculo.calcularPuntos();
+
+            // Acumular valores
+            cantidadVehiculos++;
+            subtotalAcumulado += subtotalVehiculo;
+            puntosAcumulados += puntosVehiculo;
+
+            // Mostrar subtotal parcial en consola (opcional requerido en la guía)[cite: 4]
+            System.out.println(">> Subtotal vehículo " + placa + ": " + subtotalVehiculo + " | Puntos ganados: " + puntosVehiculo);
+            JOptionPane.showMessageDialog(null, "Subtotal vehículo " + placa + ": " + subtotalVehiculo + "\nPuntos ganados: " + puntosVehiculo);
+
+            // Preguntar si desea registrar otro vehículo
+            continuar = JOptionPane.showConfirmDialog(null, "¿Desea registrar otro vehículo?", "Continuar", JOptionPane.YES_NO_OPTION);
+
+        } while (continuar == JOptionPane.YES_OPTION);
+
+        // Evaluación final de beneficios si es VIP
+        double totalFinal = subtotalAcumulado;
+        int puntosTotalesFinales = puntosAcumulados;
+        String mensajeVip = "";
+
+        if (categoria.equalsIgnoreCase("VIP")) {
+            double descuentoVip = subtotalAcumulado * 0.05;
+            totalFinal = subtotalAcumulado - descuentoVip;
+            puntosTotalesFinales = puntosAcumulados * 2;
+            mensajeVip = "*** APLICANDO BENEFICIOS VIP (5% Descuento / Puntos x2) ***\n";
+        }
+
+        // Construcción del Resumen Final
+        String resumenFinal = "RESUMEN FINAL DE ALQUILERES\n" +
+                "=====\n" +
+                "Cliente: " + nombreCliente + "\n" +
+                "Cédula: " + cedulaCliente + "\n" +
+                "Categoría: " + categoria + "\n" +
+                "Mes de registro: " + nombreMes + "\n" +
+                "Cantidad de vehículos procesados: " + cantidadVehiculos + "\n" +
+                "Subtotal antes de descuento VIP: " + subtotalAcumulado + "\n" +
+                "Puntos antes de bono VIP: " + puntosAcumulados + "\n" +
+                mensajeVip +
+                "TOTAL A PAGAR: " + totalFinal + "\n" +
+                "PUNTOS DE LEALTAD TOTALES: " + puntosTotalesFinales;
+
+            // Mostrar el reporte final en pantalla
+            System.out.println(resumenFinal);
+            JOptionPane.showMessageDialog(null, resumenFinal);
+    }
+
+    // Método auxiliar para transformar el número de mes a texto
+    public static String obtenerNombreMes(int mes) {
+        String[] meses = {
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        };
+        return meses[mes - 1];
+    }
+}
